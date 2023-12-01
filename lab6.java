@@ -23,7 +23,7 @@ public class lab6 {
     private static int arr3[] = new int[128];
     private static int arr4[][] = new int[256][4];
     private static int arr5[][] = new int[128][8];
-    private static int arr6[] = new int[1];
+    private static int arr6[][] = new int[32][8];
     private static int arr7[] = new int[1024];
 
     private static int hit1 = 0;
@@ -64,6 +64,7 @@ public class lab6 {
                 three(num);
                 four(num);
                 five(num);
+                six(num);
                 seven(num);
 
             }
@@ -97,7 +98,9 @@ public class lab6 {
         System.out.println("Cache size: 2048B       Associativity: 4       Block size: 1");
         System.out.format("Hits: %d    Hit Rate: %.2f%%\n", hit5, ((float)hit5/total) * 100.0f);
         System.out.println("---------------------------");
-        System.out.println("...");
+        System.out.println("Cache #6");
+        System.out.println("Cache size: 2048B       Associativity: 4       Block size: 4");
+        System.out.format("Hits: %d    Hit Rate: %.2f%%\n", hit6, ((float)hit6/total) * 100.0f);
         System.out.println("---------------------------");
         System.out.println("Cache #7");
         System.out.println("Cache size: 4096B       Associativity: 1       Block size: 1");
@@ -208,6 +211,45 @@ public class lab6 {
             }
             arr5[index][spot] = total;
             arr5[index][spot + 1] = tag;
+        
+        }
+    }
+
+    public static void six(int num) {
+
+        num = num >> 4;
+        int index = num & 0b11111;
+        int tag = num >> 5;
+
+        if (arr6[index][1] == tag) {
+            // hit spot 1
+            arr6[index][0] = total;
+            hit6 += 1;
+        } else if (arr6[index][3] == tag){
+            // hit spot 2
+            arr6[index][2] = total;
+            hit6 += 1;
+        } else if (arr6[index][5] == tag){
+            // hit spot 2
+            arr6[index][4] = total;
+            hit6 += 1;
+        } else if (arr6[index][7] == tag){
+            // hit spot 2
+            arr6[index][6] = total;
+            hit6 += 1;
+        }
+        else {
+            int smallest = Integer.MAX_VALUE;
+            int spot = -1;
+
+            for (int i = 0; i < arr6[index].length; i+=2){
+                if (arr6[index][i] < smallest) {
+                    smallest = arr6[index][i];
+                    spot = i;
+                }
+            }
+            arr6[index][spot] = total;
+            arr6[index][spot + 1] = tag;
         
         }
     }
