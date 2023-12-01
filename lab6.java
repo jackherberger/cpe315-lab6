@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -20,8 +21,8 @@ public class lab6 {
     private static int arr1[] = new int[512];
     private static int arr2[] = new int[256];
     private static int arr3[] = new int[128];
-    private static int arr4[] = new int[1];
-    private static int arr5[] = new int[1];
+    private static int arr4[][] = new int[256][4];
+    private static int arr5[][] = new int[128][8];
     private static int arr6[] = new int[1];
     private static int arr7[] = new int[1024];
 
@@ -61,6 +62,8 @@ public class lab6 {
                 one(num);
                 two(num);
                 three(num);
+                four(num);
+                five(num);
                 seven(num);
 
             }
@@ -85,6 +88,14 @@ public class lab6 {
         System.out.println("Cache #3");
         System.out.println("Cache size: 2048B       Associativity: 1       Block size: 4");
         System.out.format("Hits: %d    Hit Rate: %.2f%%\n", hit3, ((float)hit3/total) * 100.0f);
+        System.out.println("---------------------------");
+        System.out.println("Cache #4");
+        System.out.println("Cache size: 2048B       Associativity: 2       Block size: 1");
+        System.out.format("Hits: %d    Hit Rate: %.2f%%\n", hit4, ((float)hit4/total) * 100.0f);
+        System.out.println("---------------------------");
+        System.out.println("Cache #5");
+        System.out.println("Cache size: 2048B       Associativity: 4       Block size: 1");
+        System.out.format("Hits: %d    Hit Rate: %.2f%%\n", hit5, ((float)hit5/total) * 100.0f);
         System.out.println("---------------------------");
         System.out.println("...");
         System.out.println("---------------------------");
@@ -134,10 +145,77 @@ public class lab6 {
         }
     }
 
-    public static void seven(int num) {
+    public static void four(int num) {
+
         num = num >> 2;
         int index = num & 0b11111111;
         int tag = num >> 8;
+
+        if (arr4[index][1] == tag) {
+            // hit spot 1
+            arr4[index][0] = total;
+            hit4 += 1;
+        } else if (arr4[index][3] == tag){
+            // hit spot 2
+            arr4[index][2] = total;
+            hit4 += 1;
+        }
+        else {
+            if (arr4[index][0] < arr4[index][2]){
+                arr4[index][1] = tag;
+                arr4[index][0] = total;
+                
+            }
+            else {
+                arr4[index][3] = tag;
+                arr4[index][2] = total;
+            }
+        }
+    }
+
+    public static void five(int num) {
+
+        num = num >> 2;
+        int index = num & 0b1111111;
+        int tag = num >> 7;
+
+        if (arr5[index][1] == tag) {
+            // hit spot 1
+            arr5[index][0] = total;
+            hit5 += 1;
+        } else if (arr5[index][3] == tag){
+            // hit spot 2
+            arr5[index][2] = total;
+            hit5 += 1;
+        } else if (arr5[index][5] == tag){
+            // hit spot 2
+            arr5[index][4] = total;
+            hit5 += 1;
+        } else if (arr5[index][7] == tag){
+            // hit spot 2
+            arr5[index][6] = total;
+            hit5 += 1;
+        }
+        else {
+            int smallest = Integer.MAX_VALUE;
+            int spot = -1;
+
+            for (int i = 0; i < arr5[index].length; i+=2){
+                if (arr5[index][i] < smallest) {
+                    smallest = arr5[index][i];
+                    spot = i;
+                }
+            }
+            arr5[index][spot] = total;
+            arr5[index][spot + 1] = tag;
+        
+        }
+    }
+
+    public static void seven(int num) {
+        num = num >> 2;
+        int index = num & 0b1111111111;
+        int tag = num >> 10;
         if (arr7[index] == tag ) {
             // hit
             hit7 += 1;
