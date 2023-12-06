@@ -21,6 +21,7 @@ public class lab6 {
     private static int arr1[] = new int[512];
     private static int arr2[] = new int[256];
     private static int arr3[] = new int[128];
+    
     private static int arr4[][] = new int[256][4];
     private static int arr5[][] = new int[128][8];
     private static int arr6[][] = new int[32][8];
@@ -37,6 +38,15 @@ public class lab6 {
     private static int total = 0;
 
     public static void main(String[] args) {
+        for (int i = 0; i < arr3.length; i++) {
+            arr3[i] = -1000;
+        }
+
+        for (int i = 0; i < arr6.length; i++) {
+            for (int j = 0; j < arr6[i].length; j++) {
+                arr6[i][j] = -1000;
+            }
+        }
 
         // get file
         if (args.length == 0) {
@@ -57,7 +67,6 @@ public class lab6 {
                 // get the num we are working with
                 String[] words = line.trim().split("\\s+");
                 int num = Integer.parseInt(words[1], 16);
-                total += 1;
                 // call functions
                 one(num);
                 two(num);
@@ -66,6 +75,7 @@ public class lab6 {
                 five(num);
                 six(num);
                 seven(num);
+                total += 1;
 
             }
         } catch (IOException e) {
@@ -105,7 +115,8 @@ public class lab6 {
         System.out.println("Cache #7");
         System.out.println("Cache size: 4096B       Associativity: 1       Block size: 1");
         System.out.format("Hits: %d    Hit Rate: %.2f%%\n", hit7, ((float)hit7/total) * 100.0f);
-        System.out.println();
+        System.out.println("---------------------------");
+        // System.out.println("Total " + total);
     }
 
     // 2KB, direct mapped, 1-word blocks
@@ -113,6 +124,10 @@ public class lab6 {
         num = num >> 2;
         int index = num & 0b111111111;
         int tag = num >> 9;
+
+
+
+
         if (arr1[index] == tag) {
             // hit
             hit1 += 1;
@@ -136,10 +151,18 @@ public class lab6 {
     }
 
     public static void three(int num) {
-        num = num >> 4;
-        int index = num & 0b1111111;
-        int tag = num >> 7;
+        int num1;
+        num1 = num >>> 4;
+        //int index = num & 0b1111111;
+        int index = num1 & 127;
+        int tag = num1 >>> 7;
+        if (tag == -1000) {
+            System.out.println("Here");
+        }
         if (arr3[index] == tag) {
+            if (total == 4999999){
+                hit3 += 1;
+            }
             // hit
             hit3 += 1;
         } else {
@@ -222,22 +245,35 @@ public class lab6 {
         int tag = num >> 5;
 
         if (arr6[index][1] == tag) {
+            if (total == 4999999){
+                hit6 += 1;
+            }
             // hit spot 1
             arr6[index][0] = total;
             hit6 += 1;
         } else if (arr6[index][3] == tag){
+            if (total == 4999999){
+                hit6 += 1;
+            }
             // hit spot 2
             arr6[index][2] = total;
             hit6 += 1;
         } else if (arr6[index][5] == tag){
+            if (total == 4999999){
+                hit6 += 1;
+            }
             // hit spot 2
             arr6[index][4] = total;
             hit6 += 1;
         } else if (arr6[index][7] == tag){
+            if (total == 4999999){
+                hit6 += 1;
+            }
             // hit spot 2
             arr6[index][6] = total;
             hit6 += 1;
         }
+        
         else {
             int smallest = Integer.MAX_VALUE;
             int spot = -1;
